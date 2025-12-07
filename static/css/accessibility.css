@@ -1,0 +1,138 @@
+/* Accessibility Widget Styles */
+
+#accessibility-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#accessibility-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+#accessibility-btn:hover {
+    transform: scale(1.1);
+}
+
+#accessibility-menu {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 280px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    padding: 15px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+
+#accessibility-menu.show {
+    display: block;
+    opacity: 1;
+}
+
+.acc-option {
+    margin-bottom: 12px;
+}
+
+.acc-option-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.acc-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.acc-btn {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 13px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #333;
+}
+
+.acc-btn:hover {
+    background-color: #e9ecef;
+}
+
+.acc-btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+/* Accessibility Modes */
+
+/* Font Sizing */
+html.acc-font-large {
+    font-size: 110% !important;
+}
+
+html.acc-font-xlarge {
+    font-size: 125% !important;
+}
+
+/* High Contrast Mode */
+body.acc-high-contrast {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+body.acc-high-contrast .card,
+body.acc-high-contrast .navbar,
+body.acc-high-contrast .sidebar,
+body.acc-high-contrast .footer,
+body.acc-high-contrast .modal-content {
+    background-color: #222 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+body.acc-high-contrast a {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+}
+
+body.acc-high-contrast .btn {
+    background-color: #000 !important;
+    color: #ffff00 !important;
+    border: 2px solid #ffff00 !important;
+}
+
+body.acc-high-contrast .text-muted {
+    color: #ddd !important;
+}
+
+/* Highlight Links */
+body.acc-links-highlight a {
+    text-decoration: underline !important;
+    background-color: yellow !important;
+    color: black !important;
+}
+
