@@ -70,6 +70,12 @@ def init_db():
         c.execute("ALTER TABLE user_profiles ADD COLUMN interests TEXT")
     except sqlite3.OperationalError:
         pass
+    
+    try:
+        c.execute("ALTER TABLE user_profiles ADD COLUMN cluster TEXT DEFAULT 'Unknown'")
+    except sqlite3.OperationalError:
+        pass
+        
     conn.commit()
     conn.close()
 
@@ -106,21 +112,22 @@ def check_login(username, password):
     return False
 
 # ---- DATA HELPERS ----
-def save_user_profile(username, age, gender, condition_type, city, interests):
+def save_user_profile(username, age, gender, condition_type, city, interests, cluster="Couch Potato"):
     conn = get_connection()
     c = conn.cursor()
     c.execute(
         """
-        INSERT INTO user_profiles (username, age, gender, condition_type, city, interests)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO user_profiles (username, age, gender, condition_type, city, interests, cluster)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(username) DO UPDATE SET
             age = excluded.age,
             gender = excluded.gender,
             condition_type = excluded.condition_type,
             city = excluded.city,
-            interests = excluded.interests
+            interests = excluded.interests,
+            cluster = excluded.cluster
         """,
-        (username, age, gender, condition_type, city, interests),
+        (username, age, gender, condition_type, city, interests, cluster),
     )
     conn.commit()
     conn.close()
@@ -130,7 +137,7 @@ def load_user_profile(username):
     c = conn.cursor()
     c.execute(
         """
-        SELECT age, gender, condition_type, city, interests
+        SELECT age, gender, condition_type, city, interests, cluster
         FROM user_profiles
         WHERE username = ?
         """,
@@ -162,18 +169,38 @@ def save_events(username, events_response):
     
     recommended_events = events_response.get("recommended_events", [])
     for event in recommended_events:
+        # Handle different date formats (DD/MM/YYYY vs YYYY-MM-DD)
+        date_str = event.get("date")
+        
+        # Try to parse DD/MM/YYYY HH:MM or DD/MM/YYYY
+        try:
+             # Try DD/MM/YYYY HH:MM
+            parsed_date = datetime.datetime.strptime(date_str, "%d/%m/%Y %H:%M")
+            date_formatted = parsed_date.strftime("%Y-%m-%d")
+        except (ValueError, TypeError):
+            try:
+                # Try DD/MM/YYYY
+                parsed_date = datetime.datetime.strptime(date_str, "%d/%m/%Y")
+                date_formatted = parsed_date.strftime("%Y-%m-%d")
+            except (ValueError, TypeError):
+                 # Fallback to original string if it matches YYYY-MM-DD
+                 date_formatted = date_str
+
+        # Handle 'event_name' vs 'name'
+        event_name = event.get("name") or event.get("event_name")
+        
         c.execute("""
             INSERT INTO events (username, name, address, zip, accessible, priceless, date, text, relevance_score)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             username,
-            event.get("name"),
-            event.get("address"),
+            event_name,
+            event.get("address") or event.get("city"), # Mapping city to address if address is missing
             event.get("zip"),
             event.get("accessible"),
             event.get("priceless"),
-            event.get("date"),
-            event.get("text"),
+            date_formatted,
+            event.get("text") or event.get("description"),
             event.get("relevance_score")
         ))
     conn.commit()
@@ -244,7 +271,15 @@ def index():
     
     user = session['user']
     has_profile = user_has_profile(user)
-    return render_template('home.html', user=user, has_profile=has_profile)
+    
+    # Load profile to get cluster info
+    profile_data = load_user_profile(user)
+    # Default to 'Unknown' if no profile, otherwise use stored cluster or fallback to 'Couch Potato'
+    user_cluster = profile_data.get('cluster') if profile_data else 'Unknown'
+    if has_profile and not user_cluster:
+        user_cluster = 'Couch Potato'
+
+    return render_template('home.html', user=user, has_profile=has_profile, cluster=user_cluster)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -309,7 +344,13 @@ def profile():
             condition_type_str = ",".join(conditions) if conditions else None
             interests_str = ",".join(interests) if interests else None
             
-            save_user_profile(user, age, gender, condition_type_str, city, interests_str)
+            # TODO: Logic to determine cluster dynamically later?
+            # For now, we update it or keep default. 
+            # If we want to keep existing cluster on update unless changed by AI:
+            current_profile = load_user_profile(user)
+            current_cluster = current_profile.get('cluster', 'Couch Potato') if current_profile else 'Couch Potato'
+            
+            save_user_profile(user, age, gender, condition_type_str, city, interests_str, current_cluster)
             
             # Helper logic for backend integration
             json_data = {

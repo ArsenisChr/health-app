@@ -32,7 +32,7 @@ def upload_pdf(pdf_bytes: bytes, filename: str) -> requests.Response:
     
     resp = requests.post(FILES_ENDPOINT, headers=headers, files=files)
     
-    if resp.status_code != 200:
+    if resp.status_code not in [200, 201]:
         print(f"Error {resp.status_code}: {resp.text}")
         resp.raise_for_status()
     
@@ -63,7 +63,7 @@ def upload_json(json_data: bytes | dict, filename: str) -> requests.Response:
     
     resp = requests.post(FILES_ENDPOINT, headers=headers, files=files)
     
-    if resp.status_code != 200:
+    if resp.status_code not in [200, 201]:
         print(f"Error {resp.status_code}: {resp.text}")
         resp.raise_for_status()
     
@@ -85,10 +85,7 @@ def start_run_workflow(filename: str, workflow_type: str, upload_response: dict 
     # Βρες το file path από το upload response
     # Δοκίμασε διάφορους πιθανούς keys που μπορεί να έχει το response
     file_path = (
-        upload_response.get("path") or 
-        upload_response.get("file_path") or 
-        upload_response.get("file_id") or 
-        upload_response.get("id")
+        upload_response.get("path")
     )
     
     if not file_path:
@@ -142,7 +139,7 @@ def start_run_workflow(filename: str, workflow_type: str, upload_response: dict 
         headers=request_headers, 
         json=payload
     )
-    
+
     resp.raise_for_status()
     return extract_json_from_langflow(resp.json())
 
@@ -170,9 +167,40 @@ def get_events(user_id: int, date: datetime.date) -> dict:
 
 def extract_json_from_langflow(response: dict) -> dict:
     try:
-        text_block = response["outputs"][0]["outputs"][0]["results"]["text"]["data"]["text"]
-        json_str = re.sub(r"```json|```", "", text_block).strip()
+        # Try multiple paths to find the text output
+        text_block = None
+        
+        # Path 1: Standard
+        try:
+            text_block = response["outputs"][0]["outputs"][0]["results"]["text"]["data"]["text"]
+        except (KeyError, IndexError, TypeError):
+            pass
+            
+        # Path 2: Message output (seen in logs)
+        if not text_block:
+            try:
+                text_block = response["outputs"][0]["outputs"][0]["outputs"]["text"]["message"]
+            except (KeyError, IndexError, TypeError):
+                pass
+
+        # Path 3: Artifacts
+        if not text_block:
+            try:
+                text_block = response["outputs"][0]["outputs"][0]["artifacts"]["text"]["raw"]
+            except (KeyError, IndexError, TypeError):
+                pass
+        
+        if not text_block:
+            print("Could not find text block in response")
+            return {}
+
+        # If it's a dict (sometimes happens), get 'text' field
+        if isinstance(text_block, dict):
+             text_block = text_block.get('text', '')
+             
+        json_str = re.sub(r"```json|```", "", str(text_block)).strip()
         data = json.loads(json_str)
+        print(data)
         return data
 
     except Exception as e:
