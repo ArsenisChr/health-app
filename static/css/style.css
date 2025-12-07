@@ -1,7 +1,109 @@
 /* Custom Styles for HealthLab Coach */
 
+:root {
+    --primary-purple: #7C3AED; /* Violet 600 */
+    --light-purple: #DDD6FE; /* Violet 200 */
+    --bg-gradient-start: #F5F3FF;
+    --bg-gradient-end: #FFFFFF;
+}
+
 body {
     background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.text-purple {
+    color: var(--primary-purple) !important;
+}
+
+.bg-purple {
+    background-color: var(--primary-purple) !important;
+    color: white;
+}
+
+.btn-purple {
+    background-color: var(--primary-purple);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-purple:hover {
+    background-color: #6D28D9; /* Violet 700 */
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+}
+
+.btn-outline-purple {
+    background-color: transparent;
+    border: 2px solid var(--primary-purple);
+    color: var(--primary-purple);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-purple:hover {
+    background-color: #F3E8FF;
+    color: var(--primary-purple);
+}
+
+.card-home {
+    background: white;
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card-home:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.level-badge {
+    background-color: #FFEDD5; /* Orange 100 */
+    color: #C2410C; /* Orange 700 */
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.progress-custom {
+    height: 10px;
+    border-radius: 10px;
+    background-color: #E5E7EB;
+    margin-top: 10px;
+}
+
+.progress-bar-purple {
+    background-color: var(--primary-purple);
+    border-radius: 10px;
+}
+
+/* Overwrite sidebar active state to match theme */
+.sidebar a.active {
+    background-color: var(--primary-purple);
+    color: white;
 }
 
 .card {

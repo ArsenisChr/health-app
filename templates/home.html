@@ -1,20 +1,92 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="jumbotron text-center mt-5">
-    <h1 class="display-4">Καλωσόρισες, {{ user }} 👋</h1>
-    {% if not has_profile %}
-        <p class="lead mt-4 text-warning fw-bold">
-            ➤ Παρακαλώ μεταβείτε στο <a href="{{ url_for('profile') }}">Προφίλ Χρήστη</a> για να συμπληρώσετε τα απαραίτητα στοιχεία.
-        </p>
-    {% else %}
-        <p class="lead mt-4">
-            Η κατηγορία σας είναι: <strong>Couch Potato!</strong> 🥔
-        </p>
-    {% endif %}
-    <hr class="my-4">
-    <p>Εξερεύνησε τις προτάσεις events ή διαχειρίσου το προφίλ σου.</p>
-    <a class="btn btn-primary btn-lg" href="{{ url_for('events') }}" role="button">Προτάσεις Event</a>
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="mb-5">
+        <h6 class="text-muted text-uppercase fw-bold mb-1">ΓΕΙΑ ΣΟΥ 👋</h6>
+        <h1 class="display-5 fw-bold">Καλωσόρισες, <span class="text-purple">{{ user }}</span></h1>
+    </div>
+
+    <!-- Main Status Card -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-10 col-lg-8">
+            <div class="card-home p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Η κατηγορία σας</h5>
+                    <span class="level-badge">LEVEL 1</span>
+                </div>
+                
+                <div class="row align-items-center">
+                    <div class="col-4 text-center">
+                        <div style="font-size: 5rem;">🥔</div>
+                    </div>
+                    <div class="col-8">
+                        {% if not has_profile %}
+                            <h2 class="fw-bold mb-1">Unknown Entity!</h2>
+                            <p class="text-muted mb-3">Συμπλήρωσε το προφίλ σου για να μάθεις την κατηγορία σου.</p>
+                        {% else %}
+                            <h2 class="fw-bold mb-1">Couch Potato!</h2>
+                            <p class="text-muted mb-3">Ώρα να κουνηθείς λίγο!</p>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>Πρόοδος</span>
+                            <span>15%</span>
+                        </div>
+                        <div class="progress progress-custom">
+                            <div class="progress-bar progress-bar-purple" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Text -->
+            <p class="text-center text-muted mb-4">
+                Εξερεύνησε τις προτάσεις events ή διαχειρίσου το προφίλ σου για να ανέβεις επίπεδο.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-3">
+                <a href="{{ url_for('events') }}" class="btn btn-purple btn-lg py-3 fw-bold shadow-sm">
+                    <i class="fas fa-calendar-check me-2"></i> Προτάσεις Event
+                </a>
+                <a href="{{ url_for('profile') }}" class="btn btn-light btn-lg py-3 fw-bold border shadow-sm text-dark">
+                    <i class="fas fa-user-edit me-2"></i> Διαχείριση Προφίλ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row justify-content-center g-4">
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon text-success">
+                    <i class="fas fa-walking"></i>
+                </div>
+                <div class="text-muted small">Βήματα Σήμερα</div>
+                <h4 class="fw-bold mt-1 mb-0">--</h4>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon text-primary">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="text-muted small">Θερμίδες</div>
+                <h4 class="fw-bold mt-1 mb-0">--</h4>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="text-muted small">Συμμετοχές σε Events</div>
+                <h4 class="fw-bold mt-1 mb-0">--</h4>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
-
