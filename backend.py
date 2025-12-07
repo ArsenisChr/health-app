@@ -17,10 +17,14 @@ WORKFLOW_ID_INJECTION = "f29e42c4-f045-4eea-bf3c-0073d3bba7fd"
 WORKFLOW_ID_EVENTS = "5fe87fa9-87f5-43e1-9822-b0d06951bdef"
 
 ALIASES = {
-    "chol": ["Cholesterol (Chol)", "Cholesterol", "Chol"],
-    "hdl":  ["HDL Cholesterol", "HDL"],
-    "ldl":  ["LDL Cholesterol", "LDL"],
-    "triglycerides": ["Triglycerides (TG)", "Triglycerides", "TG"],
+    "Age":  ["Age", "Ηλικία"],
+    "BMI":  ["BMI", "Δείκτης μάζας σώματος"],
+    "Chol": ["Cholesterol (Chol)", "Cholesterol", "Chol"],
+    "HDL":  ["HDL Cholesterol", "HDL"],
+    "LDL":  ["LDL Cholesterol", "LDL"],
+    "TG":   ["Triglycerides (TG)", "Triglycerides", "TG"],
+    "Cr":   ["Creatinine", "Cr"],
+    "BUN":  ["Urea", "Blood Urea Nitrogen", "BUN"],
 }
 
 def extract_kv_from_pdf(pdf_file: bytes | str) -> dict:

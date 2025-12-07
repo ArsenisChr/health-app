@@ -6,7 +6,9 @@ import calendar
 import json
 from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from werkzeug.utils import secure_filename
 from backend import start_run_workflow, upload_pdf, upload_json, get_events
+from ml_service import predict_user_cluster
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Replace with a secure key in production
@@ -391,11 +393,42 @@ def profile():
                     flash("Δεν επιλέχθηκε αρχείο PDF.", "warning")
                 elif file:
                     try:
+                        filename = secure_filename(file.filename)
                         pdf_bytes = file.read()
-                        response = upload_pdf(pdf_bytes, file.filename)
+                        response = upload_pdf(pdf_bytes, filename)
                         if response:
-                            start_run_workflow(file.filename, 'injection', response)
-                            flash("Το PDF αναλύθηκε επιτυχώς!", "success")
+                            start_run_workflow(filename, 'injection', response)
+                            
+                            # 2. Predict Cluster using PDF Data
+                            from backend import pdf_to_df
+                            try:
+                                pdf_df = pdf_to_df(pdf_bytes)
+                                if not pdf_df.empty:
+                                    # Convert to dictionary: {'Chol': 200, 'HDL': 50 ...}
+                                    medical_data = pdf_df.iloc[0].to_dict()
+                                    
+                                    # Predict Cluster
+                                    new_cluster = predict_user_cluster(medical_data)
+                                    
+                                    # Update Cluster in DB (preserve other profile fields)
+                                    current_full = load_user_profile(user) or {}
+                                    save_user_profile(
+                                        user, 
+                                        current_full.get('age'), 
+                                        current_full.get('gender'), 
+                                        current_full.get('condition_type'), 
+                                        current_full.get('city'), 
+                                        current_full.get('interests'), 
+                                        new_cluster
+                                    )
+                                    
+                                    flash(f"Το PDF αναλύθηκε επιτυχώς! Νέα κατηγορία: {new_cluster}", "success")
+                                else:
+                                    flash("Το PDF αναλύθηκε αλλά δεν βρέθηκαν μετρήσεις για κατηγοριοποίηση.", "warning")
+                            except Exception as parse_err:
+                                print(f"PDF local parse error: {parse_err}")
+                                flash(f"Σφάλμα κατά την εξαγωγή δεδομένων από το PDF: {str(parse_err)}", "warning")
+
                     except Exception as e:
                         flash(f"Σφάλμα κατά την ανάλυση PDF: {str(e)}", "danger")
             return redirect(url_for('profile'))
