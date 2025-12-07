@@ -3,7 +3,6 @@
 This is a Flask-based migration of the HealthLab Coach application.
 
 ## Installation
-
 You can install the dependencies and the package using:
 
 ```bash
