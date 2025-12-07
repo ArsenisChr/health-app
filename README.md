@@ -7,7 +7,7 @@ Built by **The Couch Potatoes** — AI Hackathon Unboxed (PwC Greece)
 ## 🚀 Overview
 **WellnessAI** είναι μια AI εφαρμογή που προτείνει προσωποποιημένες δραστηριότητες ευεξίας με βάση:
 
-- Το **προφίλ υγείας** του χρήστη  
+- Το **προφίλ** του χρήστη  
 - Την **ανάλυση PDF εξετάσεων** (LangFlow)  
 - Μια **fun AI κατηγοριοποίηση**  
 - Τα **ενδιαφέροντα** και την **πόλη** του  
@@ -58,6 +58,8 @@ AI parsing μέσω LangFlow → εξαγωγή βασικών ιατρικών 
 *   **Data Processing**: Pandas, pdfplumber
 *   **Frontend**: HTML5, CSS3, Bootstrap 5, JavaScript
 
+  
+*   Ολο το UI τρέχει μέσα στο AZURE.
 ## 📂 Project Structure
 
 ```
@@ -83,7 +85,7 @@ health-app/
 
 1.  **User Onboarding**: Users register and complete a basic profile (Age, City, Interests).
 2.  **Data Ingestion**: Users can upload PDF lab results. The app parses these files (`backend.py`) to extract biomarker data.
-3.  **Classification**: The `ml_service.py` loads a pre-trained XGBoost model to classify the user into a lifestyle cluster (e.g., "Weekend Warrior") based on their data.
+3.  **Classification**: The `ml_service.py` loads a pre-trained XGBoost model to classify the user into a lifestyle cluster based on their data.
 4.  **Event Recommendation**: The app communicates with a Langflow agent to fetch personalized event recommendations based on the user's location and interests.
 5.  **Dashboard**: The user sees their "Cluster Level", progress, and a calendar of recommended events.
 
