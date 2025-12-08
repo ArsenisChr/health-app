@@ -52,7 +52,7 @@ AI parsing μέσω LangFlow → εξαγωγή βασικών ιατρικών 
 *   **Backend**: Python, Flask
 *   **Database**: SQLite (with cloud persistence logic)
 *   **AI & Machine Learning**:
-    *   **Langflow**: Orchestration for PDF extraction and Event recommendation workflows.
+    *   **Langflow**: Event recommendation agent based on LLM'S.
     *   **XGBoost**: User classification model.
     *   **Scikit-Learn**: Data preprocessing and encoding.
 *   **Data Processing**: Pandas, pdfplumber
@@ -105,11 +105,12 @@ Lefteris Tsimplekas,
     pip install -r requirements.txt
     ```
 3.  Train-ready XGBoost model for classification.
-4.  Run the Flask app:
+4.  Langflow API key and URL must be given in the backend to run the AI Recomendation Agent
+5.  Run the Flask app:
     ```bash
     python app.py
     ```
-5.  Visit `http://localhost:5000` in your browser.
+6.  Visit `http://localhost:5000` in your browser.
 
    🏆 For
 
