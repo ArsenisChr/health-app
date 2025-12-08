@@ -105,7 +105,7 @@ Lefteris Tsimplekas,
     pip install -r requirements.txt
     ```
 3.  Train-ready XGBoost model for classification.
-4.  Langflow API key and URL must be given in the backend to run the AI Recomendation Agent
+4.  The flow for recomendation agent is provided, for the whole pipeline to be excecuted it you must upload it to the Langflow and set Up your API keys and URL's to run the service
 5.  Run the Flask app:
     ```bash
     python app.py
